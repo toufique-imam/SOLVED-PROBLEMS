@@ -3,9 +3,11 @@ using namespace std;
 typedef long long ll;
 
 //coin change
-//unlimited coin
-//koto bhabe banano jabe
-//limited coin
+//unlimited coins
+//limited coins
+//How_many_ways_to_make?
+//Can_make?
+
 
 class CoinChange_un
 {
