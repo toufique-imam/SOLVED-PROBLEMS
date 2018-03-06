@@ -1,6 +1,6 @@
 /*
 ID:sabertooth9
-TASK:DCP-17: Tourist
+TASK:UVA 11831 Sticker Collector Robot
 LANG: C++14
 */
 #include<bits/stdc++.h>
