@@ -1,0 +1,134 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+const int inf =10000000;
+int level[109][20][20];
+int ax[]= {1,1,2,2,-1,-1,-2,-2};
+int ay[]= {2,-2,1,-1,2,-2,1,-2};
+int n,m;
+vector<string>v;
+
+void clean()
+{
+    memset(level,-1,sizeof level);
+    v.clear();
+}
+bool isNumber(char x)
+{
+    return x=='1' or x=='2' or x=='3' or x=='4' or x=='5' or x=='6' or x=='7' or x=='8' or x=='9';
+}
+
+bool cango(int x,int y)
+{
+    return x<n and y<m and x>-1 and y>-1;
+}
+
+void bfs(int knightno,int x,int y)
+{
+    queue<int>q;
+    q.push(x);
+    q.push(y);
+    level[knightno][x][y]=0;
+    while(q.size())
+    {
+        int tx=q.front();
+        q.pop();
+        int ty=q.front();
+        q.pop();
+        for(int i=0; i<8; i++)
+        {
+            int ttx=tx+ax[i];
+            int tty=ty+ay[i];
+            if(cango(ttx,tty) && level[knightno][ttx][tty]==-1)
+            {
+                q.push(ttx);
+                q.push(tty);
+                level[knightno][ttx][tty]=level[knightno][tx][ty]+1;
+            }
+        }
+    }
+}
+void process(int power,int knight)
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<m;j++)
+        {
+            if(level[knight][i][j]>1)
+            {
+                level[knight][i][j]=(level[knight][i][j]/power)+1;
+            }
+        }
+    }
+}
+
+int main()
+{
+    freopen("input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    int test;
+    cin>>test;
+    for(int _t=1; _t<=test; _t++)
+    {
+        clean();
+        cin>>n>>m;
+        string s;
+        for(int i=0; i<n; i++)
+        {
+            cin>>s;
+            v.push_back(s);
+        }
+        int knight=0;
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<m; j++)
+            {
+                if(isNumber(v[i][j]))
+                {
+                    bfs(knight,i,j);
+                    if(v[i][j]-'0'>1)process(v[i][j]-'0',knight);
+                    knight++;
+                }
+            }
+        }
+        cout<<"dd"<<endl;
+        for(int k=0;k<knight;k++)
+        {
+            cout<<"knight "<<k<<endl;
+            for(int i=0;i<n;i++)
+            {
+                for(int j=0;j<m;j++)
+                {
+                    cout<<level[k][i][j]<<" ";
+                }
+                cout<<endl;
+           }
+        }
+        bool f=0;
+        int ans=inf;
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<m; j++)
+            {
+                int temp=0;
+                for(int k=0; k<knight; k++)
+                {
+                    if(level[k][i][j]==-1)
+                    {
+                        f=1;
+                        break;
+                    }
+                    temp+=level[k][i][j];
+                }
+                if(!f)
+                    ans=min(temp,ans);
+            }
+        }
+        cout<<"Case "<<_t<<": "<<ans<<endl;
+    }
+}
+
