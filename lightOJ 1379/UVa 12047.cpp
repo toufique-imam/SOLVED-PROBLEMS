@@ -91,5 +91,6 @@ int main()
                 ans=max(ans,v[i].sc.sc);
         }
         printf("Case %d: %lld\n",t,ans);
+        //printf("%lld\n",ans);
     }
 }
