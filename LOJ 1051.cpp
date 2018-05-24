@@ -43,28 +43,21 @@ bool isvowel(char s)
 {
     return s=='A' or s=='E' or s=='I' or s=='O' or s=='U';
 }
-ll dp[100][60][60];
+ll dp[55][7][7];
 string s;
 ll recur(int idx,int vow,int con)
 {
-    if(vow>=3 or con>=5)
-        return 1;
-    if(idx>=n)
-        return 0;
-    if(dp[idx][vow][con]!=-1)
-        return dp[idx][vow][con];
-    if(isvowel(s[idx]))
-        dp[idx][vow][con]=recur(idx+1,vow+1,0);
-    else if(s[idx]!='?')
-        dp[idx][vow][con]=recur(idx+1,0,con+1);
+    if(vow>=3 or con>=5)return 1;
+    if(idx>=n)return 0;
+    if(dp[idx][vow][con]!=-1)return dp[idx][vow][con];
+    if(isvowel(s[idx]))dp[idx][vow][con]=recur(idx+1,vow+1,0);
+    else if(s[idx]!='?')dp[idx][vow][con]=recur(idx+1,0,con+1);
     else
     {
         ll r1=recur(idx+1,vow+1,0);
         ll r2=recur(idx+1,0,con+1);
-        if(r1==r2)
-            dp[idx][vow][con]=r1;
-        else
-            dp[idx][vow][con]=2;
+        if(r1==r2) dp[idx][vow][con]=r1;
+        else dp[idx][vow][con]=2;
     }
     return dp[idx][vow][con];
 }
@@ -76,21 +69,12 @@ int main()
     for(int T=1; T<=test; T++)
     {
         cin>>s;
-        // cout<<s<<endl;
-        ll cnt=0;
-        for(int i=0; i<s.size(); i++)
-            if(s[i]=='?')
-                cnt++;
         memset(dp,-1,sizeof dp);
         n=s.size();
-        cnt=powl(2,cnt);
         printf("Case %d: ",T);
         ll x=recur(0,0,0);
-        if(x==0)
-            printf("GOOD\n");
-        else if(x==1)
-            printf("BAD\n");
-        else
-            printf("MIXED\n");
+        if(x==0)printf("GOOD\n");
+        else if(x==1)printf("BAD\n");
+        else printf("MIXED\n");
     }
 }
