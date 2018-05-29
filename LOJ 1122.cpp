@@ -91,28 +91,26 @@ int main()
     for(int T=1; T<=test; T++)
     {
         scanf("%d %d",&m,&n);
-        for(int i=1; i<=m; i++){
+        for(int i=1; i<=m; i++)
+        {
             scanf("%d",&ara[i]);
             dp[1][i]=1;
         }
-        for(int i=2;i<=n;i++)
+        int prev=2,now=1;
+        for(int i=2; i<=n; i++)
         {
-            for(int j=1;j<=m;j++)
+            swap(prev,now);
+            for(int j=1; j<=m; j++)
             {
-                dp[i][j]=0;
-                for(int k=1;k<=m;k++)
-                {
+                dp[now][j]=0;
+                for(int k=1; k<=m; k++)
                     if(abs(ara[j]-ara[k])<3)
-                    {
-                        dp[i][j]+=dp[i-1][k];
-                    }
-                }
+                        dp[now][j]+=dp[prev][k];
             }
         }
         int ans=0;
-        //printf("Case %d: %lld\n",T,recur(0));
-        for(int i=1;i<=m;i++)
-            ans+=dp[n][i];
+        for(int i=1; i<=m; i++)
+            ans+=dp[now][i];
         printf("Case %d: %d\n",T,ans);
     }
 }
