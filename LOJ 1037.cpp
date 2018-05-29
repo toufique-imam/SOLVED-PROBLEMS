@@ -23,17 +23,17 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 #define gcd(A,B)        __gcd(A,B)
-#define PQ 			    priority_queue
-#define ii 			    int,int
+#define PQ              priority_queue
+#define ii              int,int
 #define pll             pair<ll,ll>
 #define PI              2*acos(0.0)
 #define all(v)          v.begin(),v.end()
-#define pii 		    pair<ii>
+#define pii             pair<ii>
 #define pb              push_back
-#define sf(x) 		    scanf("%I64d",&x)
-#define sff(x,y) 	    scanf("%I64d %I64d",&x,&y)
-#define sl(x)   	    scanf("%lld",&x)
-#define sll(x,y)   	    scanf("%lld %lld",&x,&y)
+#define sf(x)           scanf("%I64d",&x)
+#define sff(x,y)        scanf("%I64d %I64d",&x,&y)
+#define sl(x)           scanf("%lld",&x)
+#define sll(x,y)        scanf("%lld %lld",&x,&y)
 #define ff              first
 #define ss              second
 #define segtree         lt=2*par,rg=2*par+1,mid=(st+en)/2
@@ -55,36 +55,30 @@ using namespace std;
 /* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1}; */ // Knight Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */ // Hexagonal Direction
 int n,limit;
-const int N=(1<<16);
-int dp[16][N+1];
+const int N=(1<<15);
+int dp[N+1];
 int ara[16];
-vector<string>v;
+string v[16];
 int bullet_cnt(int x,int mask)
 {
     int best=1;
     for(int i=0;i<n;i++)
-    {
         if(i!=x and (mask&(1<<i)))
             best=max(best,v[i][x]-'0');
-    }
     int cnt=ara[x]/best;
     if(ara[x]%best)cnt++;
     return cnt;
 }
-int recur(int pos,int mask)
+int recur(int mask)
 {
     if(mask==limit)
         return 0;
-    if(dp[pos][mask]!=-1)return dp[pos][mask];
+    if(dp[mask]!=-1)return dp[mask];
     int ans=1e9;
     for(int i=0;i<n;i++)
-    {
         if(!(mask &(1<<i)))
-        {
-            ans=min(ans,bullet_cnt(i,mask)+recur(i,mask|(1<<i)));
-        }
-    }
-    return dp[pos][mask]=ans;
+            ans=min(ans,bullet_cnt(i,mask)+recur(mask|(1<<i)));
+    return dp[mask]=ans;
 }
 int main()
 {
@@ -94,18 +88,14 @@ int main()
     for(int T=1; T<=test; T++)
     {
         memset(dp,-1,sizeof dp);
-        v.clear();
         cin>>n;
         for(int i=0; i<n; i++)
             cin>>ara[i];
         string s;
         limit=(1<<(n))-1;
         for(int i=0; i<n; i++)
-        {
-            cin>>s;
-            v.pb(s);
-        }
-        int ans=recur(0,0);
+            cin>>v[i];
+        int ans=recur(0);
         printf("Case %d: %d\n",T,ans);
     }
 }
