@@ -53,42 +53,25 @@ typedef unsigned long long ull;
 string x;
 int n;
 ll dp[9][2][2][73][73];
-ll recurOdd(int pos,bool isStrt,bool isSml,int evensum,int oddsum)
+pii calc(int pos,int evensum,int oddsum,int digit)
 {
-    if(pos>=n)
-        return evensum-oddsum==1;
-    ll &ans=dp[pos][isStrt][isSml][evensum][oddsum];
-    if(ans!=-1)
-        return ans;
-    ans=0;
-    int es,os;
-    int limit=isSml==1?9:x[pos]-'0';
-    if(isStrt)
+    if(n&1)
     {
-        for(int i=1; i<=limit; i++)
-        {
-            es=evensum;
-            os=oddsum;
-            if(pos&1)
-                ans+=recurOdd(pos+1,0,(isSml|(i<x[pos]-'0')),es+i,os);
-            else
-                ans+=recurOdd(pos+1,0,(isSml|(i<x[pos]-'0')),es,os+i);
-        }
-        ans+=recurOdd(pos+1,1,1,0,0);
+        if(pos&1)
+        evensum+=digit;
+        else
+            oddsum+=digit;
     }
     else
-        for(int i=0; i<=limit; i++)
-        {
-            es=evensum;
-            os=oddsum;
-            if(pos&1)
-                ans+=recurOdd(pos+1,0,(isSml|(i<x[pos]-'0')),es+i,os);
-            else
-                ans+=recurOdd(pos+1,0,(isSml|(i<x[pos]-'0')),es,os+i);
-        }
-    return ans;
+    {
+        if(pos&1)
+            oddsum+=digit;
+        else
+            evensum+=digit;
+    }
+    return {evensum,oddsum};
 }
-ll recureven(int pos,bool isStrt,bool isSml,int evensum,int oddsum)
+ll recur(int pos,bool isStrt,bool isSml,int evensum,int oddsum)
 {
     if(pos>=n)
         return evensum-oddsum==1;
@@ -102,24 +85,16 @@ ll recureven(int pos,bool isStrt,bool isSml,int evensum,int oddsum)
     {
         for(int i=1; i<=limit; i++)
         {
-            es=evensum;
-            os=oddsum;
-            if(pos&1)
-                ans+=recureven(pos+1,0,(isSml|(i<x[pos]-'0')),es,os+i);
-            else
-                ans+=recureven(pos+1,0,(isSml|(i<x[pos]-'0')),es+i,os);
+            pii p=calc(pos,evensum,oddsum,i);
+            ans+=recur(pos+1,0,(isSml|(i<x[pos]-'0')),p.ff,p.ss);
         }
-        ans+=recureven(pos+1,1,1,0,0);
+        ans+=recur(pos+1,1,1,0,0);
     }
     else
         for(int i=0; i<=limit; i++)
         {
-            es=evensum;
-            os=oddsum;
-            if(pos&1)
-                ans+=recureven(pos+1,0,(isSml|(i<x[pos]-'0')),es,os+i);
-            else
-                ans+=recureven(pos+1,0,(isSml|(i<x[pos]-'0')),es+i,os);
+            pii p=calc(pos,evensum,oddsum,i);
+            ans+=recur(pos+1,0,(isSml|(i<x[pos]-'0')),p.ff,p.ss);
         }
     return ans;
 }
@@ -134,11 +109,7 @@ int main()
         sll(p,q);
         x=to_string(q);
         n=x.size();
-        ll ans;
-        if(n&1)
-            ans=recurOdd(0,1,0,0,0);
-        else
-            ans=recureven(0,1,0,0,0);
+        ll ans=recur(0,1,0,0,0);
         memset(dp,-1,sizeof dp);
         p--;
         if(p>0)
@@ -146,8 +117,7 @@ int main()
             x=to_string(p);
             n=x.size();
             memset(dp,-1,sizeof dp);
-            if(n&1)ans-=recurOdd(0,1,0,0,0);
-            else ans-=recureven(0,1,0,0,0);
+            ans-=recur(0,1,0,0,0);
         }
         printf("%lld\n",ans);
     }
