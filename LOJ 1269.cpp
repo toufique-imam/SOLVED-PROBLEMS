@@ -32,7 +32,9 @@ int myLog2(int x)
     return lead_zero(1) - lead_zero(x);
 }
 
-//___________Static Trie_________//
+//___________Static Trie__________//
+//-------CPU :   0.400s  --------//
+//-------Memory: 20632kb -------//
 
 const int N=50000*32+3;
 int sum[50009];
@@ -83,7 +85,9 @@ int find_(char *s,int n,bool rev)
     return n^ans[cur];
 }
 
-//_________________Dynamic Trie_____________//
+//____________ Dynamic Trie___________//
+//-------CPU :   1.532s  ------------//
+//-------Memory: 26040kb -----------//
 /*
 class node
 {
