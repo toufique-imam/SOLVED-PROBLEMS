@@ -32,7 +32,7 @@ int myLog2(int x)
     return __builtin_clz(1) - __builtin_clz(x);
 }
 const int N=50009;
-string ara[N];
+char ara[N][52];
 class node
 {
 public:
@@ -49,19 +49,19 @@ public:
 };
 node *root;
 
-void insert_(string s)
+void insert_(int idx)
 {
     node *cur=root;
     int now;
-    for(int i=0; i<(int)s.size(); i++)
+    for(int i=0; i<(int)strlen(ara[idx]); i++)
     {
-        if(s[i]=='A')
+        if(ara[idx][i]=='A')
             now=0;
-        else if(s[i]=='C')
+        else if(ara[idx][i]=='C')
             now=1;
-        else if(s[i]=='G')
+        else if(ara[idx][i]=='G')
             now=2;
-        else if(s[i]=='T')
+        else if(ara[idx][i]=='T')
             now=3;
         if(cur->next[now]==NULL)
         {
@@ -72,27 +72,28 @@ void insert_(string s)
     }
     cur->endmark=true;
 }
-int count_(string s)
+int count_(int idx)
 {
-    int l=s.size();
+    int l=strlen(ara[idx]);
     int maxi=0;
     node *cur=root;
     int now;
     for(int i=0; i<l; i++)
     {
-        if(s[i]=='A')
+        if(ara[idx][i]=='A')
             now=0;
-        else if(s[i]=='C')
+        else if(ara[idx][i]=='C')
             now=1;
-        else if(s[i]=='G')
+        else if(ara[idx][i]=='G')
             now=2;
-        else if(s[i]=='T')
+        else if(ara[idx][i]=='T')
             now=3;
         if(cur->next[now]!=NULL)
         {
             maxi=max(cur->cnt[now]*(i+1),maxi);
             cur=cur->next[now];
         }
+        else break;
     }
     return maxi;
 }
@@ -114,19 +115,16 @@ int main()
         root=new node();
         int n;
         scanf("%d",&n);
+        getchar();
         for(int i=0; i<n; i++)
         {
-            cin>>ara[i];
-        }
-        sort(ara,ara+n);
-        for(int i=0; i<n; i++)
-        {
-            insert_(ara[i]);
+            scanf("%s",&ara[i]);
+            insert_(i);
         }
         int x=0;
         for(int i=0; i<n; i++)
         {
-            x=max(x,count_(ara[i]));
+            x=max(x,count_(i));
         }
         printf("Case %d: %d\n",T,x);
         del(root);
