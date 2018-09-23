@@ -94,10 +94,34 @@ int main()
         build(1,1,n);
         printf("Case %d:\n",T);
         int a,b;
+        //______Segment Tree ______//
+        //______456ms || 6768kB____//
         while(q--)
         {
             scanf("%d %d",&a,&b);
             printf("%d\n",query(1,1,n,a,b));
         }
+        /*
+        //______Binary Serach_________//
+        //______356ms|| 2080kB________//
+        int a,b,ans;
+        while(q--)
+        {
+            scanf("%d %d",&a,&b);
+            if(ara[0]>b)
+            {
+                puts("0");
+                continue;
+            }
+            int it1=lower_bound(ara,ara+n,a)-ara;
+            if(it1 and ara[it1-1]>=a)
+                it1--;
+            int it2=lower_bound(ara,ara+n,b)-ara;
+            if(it2 and ara[it2]>b)
+                it2--;
+            it2=min(it2,n-1);
+            printf("%d\n",it2-it1+1);
+        }
+        */
     }
 }
