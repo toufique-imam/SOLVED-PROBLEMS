@@ -1,28 +1,10 @@
 /*
 ID: sabertooth
 LANG: C++11
-TASK:
+TASK:SPOJ CNT_LUCK
 */
-#include<cstdio>
-#include<sstream>
-#include<cstdlib>
-#include<cctype>
-#include<cassert>
-#include<cmath>
-#include<algorithm>
-#include<set>
-#include<queue>
-#include<stack>
-#include<list>
-#include<iostream>
-#include<fstream>
-#include<numeric>
-#include<string>
-#include<vector>
-#include<cstring>
-#include<map>
-#include<iterator>
-//#include<unordered_map>
+
+#include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 #define eps             1e-9
