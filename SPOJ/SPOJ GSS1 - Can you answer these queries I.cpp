@@ -1,8 +1,3 @@
-/*
-ID: sabertooth
-LANG: C++11
-TASK:
-*/
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -23,7 +18,6 @@ typedef long long ll;
 #define read            freopen("in.txt","r",stdin);
 #define write           freopen("out.txt","w",stdout);
 #define TEST            int test;scanf("%d",&test);for(int T=1;T<=test;T++)
-#define PCAS            printf("Case %d:",T);
 #define lead_zero(x)    __builtin_clzll(x)
 #define trail_zero(x)   __builtin_ctz(x)
 #define total_1s(x)     __builtin_popcount(x)
@@ -33,13 +27,21 @@ typedef long long ll;
 #define EB              emplace_back
 #define segtree         int mid=(st+en)/2,lt=node*2,rg=node*2+1
 #define MERGE(v1,v2,v)  merge(all(v1),all(v2),back_inserter(v))
+#define loop(a)         for(__typeof__(a.begin())itr=a.begin();itr!=a.end();itr++)
+#define log2_(x)        __builtin_clz(1) - __builtin_clz(x);
+/*
+#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("Ofast")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+*/
 //n! ~ sqrt(2*pi*n)*n^n*e^-n
 
-int myLog2(int x)
-{
-    return __builtin_clz(1) - __builtin_clz(x);
-}
-const int N=50009;
+const int N=100009;
+const int scale=100000;
+int ara[N];
+//pair<int,pair<int,int> >query[N];
+//ll ans[N];
+//int pos[3*N];
 class data
 {
 public:
@@ -55,26 +57,14 @@ public:
         sum=c;
         bsum=d;
     }
-} tree[4*N];
-ll ara[N];
-inline void merge_(data &node,data <,data &rg)
+};
+data tree[4*N];
+void merge_(data &node,data &lt,data &rg)
 {
     node.sum=lt.sum+rg.sum;
     node.prefix=max(lt.sum+rg.prefix,lt.prefix);
     node.suffix=max(rg.sum+lt.suffix,rg.suffix);
     node.bsum=max3(lt.bsum,rg.bsum,lt.suffix+rg.prefix);
-}
-void build(int node,int st,int en)
-{
-    if(st==en)
-    {
-        tree[node].prefix=tree[node].suffix=tree[node].sum=tree[node].bsum=ara[st];
-        return;
-    }
-    segtree;
-    build(lt,st,mid);
-    build(rg,mid+1,en);
-    merge_(tree[node],tree[lt],tree[rg]);
 }
 void update(int node,int st,int en,int l,int val)
 {
@@ -90,7 +80,7 @@ void update(int node,int st,int en,int l,int val)
     update(rg,mid+1,en,l,val);
     merge_(tree[node],tree[lt],tree[rg]);
 }
-data query(int node,int st,int en,int l,int r)
+data query_(int node,int st,int en,int l,int r)
 {
     if(en<l || st>r)
         return data(-1e9,-1e9,-1e9,-1e9);
@@ -100,31 +90,27 @@ data query(int node,int st,int en,int l,int r)
     }
     segtree;
     data tmp,tmp1,tmp2;
-    tmp1=query(lt,st,mid,l,r);
-    tmp2=query(rg,mid+1,en,l,r);
+    tmp1=query_(lt,st,mid,l,r);
+    tmp2=query_(rg,mid+1,en,l,r);
     merge_(tmp,tmp1,tmp2);
     return tmp;
 }
-int32_t main()
+int main()
 {
+   // memset(pos,-1,sizeof pos);
     int n;
     scanf("%d",&n);
     for(int i=1; i<=n; i++)
     {
-        scanf("%lld",&ara[i]);
+        scanf("%d",&ara[i]);
+        update(1,1,n,i,ara[i]);
     }
-    build(1,1,n);
-    int q;
-    int a,b,c;
+    int q,a,b;
     scanf("%d",&q);
-    while(q--)
+    for(int i=0; i<q; i++)
     {
-        scanf("%d %d %d",&a,&b,&c);
-        if(a==0)
-            update(1,1,n,b,c);
-        else
-        {
-            printf("%lld\n",query(1,1,n,b,c).bsum);
-        }
+        scanf("%d %d",&a,&b);
+        printf("%lld\n",query_(1,1,n,a,b).bsum);
+        //query[i]=MP(b,MP(a,i));
     }
 }
