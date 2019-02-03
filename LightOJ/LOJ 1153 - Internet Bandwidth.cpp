@@ -49,7 +49,7 @@ int bfs(int x,int target)
         int t=q.front();
         if(t==target)
         {
-            f=1;
+            f=1;//this F means it has reach sink
             break;
         }
         q.pop();
@@ -63,7 +63,7 @@ int bfs(int x,int target)
             }
         }
     }
-    if(f)
+    if(f)//if reached to sink we return the value
         return cost[target];
     else
         return 0;
