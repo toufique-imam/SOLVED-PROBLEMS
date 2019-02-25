@@ -47,7 +47,7 @@ typedef unsigned long long ull;
 #define max_ll          9223372036854775807;
 using namespace std;
 int dp[109][109];
- string s;
+string s;
 int recur(int lt,int rg)
 {
     if(lt>rg)return 0;

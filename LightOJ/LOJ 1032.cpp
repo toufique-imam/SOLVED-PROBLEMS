@@ -50,21 +50,22 @@ typedef unsigned long long ull;
 /* int dx[] = {1,-1,0,0,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1,1,-1}; */ // 8 Direction
 /* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1}; */ // Knight Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */ // Hexagonal Direction
-ll dp[32][2][2][33];
+ll dp[32][32][2][2];
 string x;
 int n;
 ll recur(int pos,bool prevbit,bool isSml,int cnt)
 {
     if(pos>=n)
         return cnt;
-    if(dp[pos][prevbit][isSml][cnt]!=-1)return dp[pos][prevbit][isSml][cnt];
-    ll ans=0;
+    ll &ans=dp[pos][cnt][prevbit][isSml];
+    if(ans!=-1)return ans;
+    ans=0;
     ans+=recur(pos+1,0,isSml|(0<x[pos]-'0'),cnt);
     if(isSml)
         ans+=recur(pos+1,1,isSml,prevbit==1?cnt+1:cnt);
     else if(1<=x[pos]-'0')
-            ans+=recur(pos+1,1,isSml|(1<x[pos]-'1'),prevbit==1?cnt+1:cnt);
-    return dp[pos][prevbit][isSml][cnt]=ans;
+            ans+=recur(pos+1,1,isSml|(1<x[pos]-'0'),prevbit==1?cnt+1:cnt);
+    return ans;
 }
 void make_bin(ll y)
 {
