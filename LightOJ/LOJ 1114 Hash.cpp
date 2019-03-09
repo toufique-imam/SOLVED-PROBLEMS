@@ -35,10 +35,7 @@ typedef unsigned long long ull;
 #define set(N, cur) N = (N | (1 << cur))
 #define reset(N, cur) N = (N & (~(1 << cur)))
 #define check(N, cur) ((N & (1 << cur)) == 0)
-#define QUERY           \
-    int test;           \
-    scanf("%d", &test); \
-    for (int _T = 1; _T <= test; _T++)
+#define QUERY int test;scanf("%d", &test);for (int _T = 1; _T <= test; _T++)
 #define FAST ios_base::sync_with_stdio(0), cin.tie(0)
 #define all(v) v.begin(), v.end()
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
@@ -61,17 +58,14 @@ typedef unsigned long long ull;
         err(_it, args);                          \
     }
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
-void err(istream_iterator<string> it)
-{
+void err(istream_iterator<string> it) {
 }
 template <typename T, typename... Args>
-void err(istream_iterator<string> it, T a, Args... args)
-{
+void err(istream_iterator<string> it, T a, Args... args) {
     cerr << *it << " = " << a << endl;
     err(++it, args...);
 }
-ll rdn(int y, int m, int d)
-{
+ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
         y--, m += 12;
@@ -85,72 +79,52 @@ ll rdn(int y, int m, int d)
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
 string ss;
-struct node
-{
-    node *next[11];
-    bool mark;
-    node()
-    {
-        for(int i = 0; i < 10; i++) next[i] = NULL;
-        mark = false;
+#define Base1 10000019
+#define Base2 10000079
+#define MOD1 1000000007
+#define MOD2 1000000009
+pll calc_hash() {
+    ll ans1=1;
+    ll ans2=1;
+    int n=ss.size();
+    for(int i=0; i<n; i++) {
+        ans1=(((ans1*Base1)%MOD1)+(ss[i]-'a'+1))%MOD1;
+        ans2=(((ans2*Base2)%MOD2)+(ss[i]-'a'+1))%MOD2;
     }
-};
-node *root;
-void delete_(node *now)
-{
-    for (int i = 0; i < 10; i++)
-    {
-        if (now->next[i] != NULL)
-        {
-            delete_(now->next[i]);
-        }
-    }
-    delete (now);
+    return MP(ans1,ans2);
 }
-bool insert(string s)
-{
-    node *now = root;
-    bool f = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        int x = s[i] - '0';
-        if (now->next[x] == NULL)
-        {
-            now->next[x] = new node();
-            f = 0;
-        }
-        now = now->next[x];
-    }
-    now->mark = true;
-    return f;
-}
-string ara[10009];
-int main()
-{
-    QUERY
-    {
-        root=new node();
+map<pll,ll>mp;
+int main() {
+    QUERY{
+        mp.clear();
         int n;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> ara[i];
+        scanf("%d",&n);
+        for(int i=0; i<n; i++) {
+            cin>>ss;
+            int x=ss.size();
+            if(x>3)
+                sort(ss.begin()+1,ss.end()-1);
+
+            pll xx=calc_hash();
+            mp[xx]++;
         }
-        sort(ara, ara + n);
-        bool f = 0;
-        printf("Case %d: ", _T);
-        for (int i = n - 1; i >= 0; i--)
-        {
-            if (insert(ara[i]))
-            {
-                f = 1;
-                break;
+        string s;
+        int qq;
+        scanf("%d",&qq);
+        getchar();
+        printf("Case %d:\n",_T);
+        while(qq--) {
+            ll ans=1;
+            getline(cin,s);
+            stringstream sx(s);
+            while(sx>>ss) {
+                int x=ss.size();
+                if(x>3)
+                    sort(ss.begin()+1,ss.end()-1);
+                pll xx=calc_hash();
+                ans=ans*mp[xx];
             }
+            printf("%lld\n",ans);
         }
-        if (f)
-            puts("NO");
-        else
-            puts("YES");
-        delete_(root);
     }
 }

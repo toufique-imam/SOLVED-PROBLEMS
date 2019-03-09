@@ -35,10 +35,7 @@ typedef unsigned long long ull;
 #define set(N, cur) N = (N | (1 << cur))
 #define reset(N, cur) N = (N & (~(1 << cur)))
 #define check(N, cur) ((N & (1 << cur)) == 0)
-#define QUERY           \
-    int test;           \
-    scanf("%d", &test); \
-    for (int _T = 1; _T <= test; _T++)
+#define QUERY int test;scanf("%d", &test);for (int _T = 1; _T <= test; _T++)
 #define FAST ios_base::sync_with_stdio(0), cin.tie(0)
 #define all(v) v.begin(), v.end()
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
@@ -61,17 +58,14 @@ typedef unsigned long long ull;
         err(_it, args);                          \
     }
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
-void err(istream_iterator<string> it)
-{
+void err(istream_iterator<string> it) {
 }
 template <typename T, typename... Args>
-void err(istream_iterator<string> it, T a, Args... args)
-{
+void err(istream_iterator<string> it, T a, Args... args) {
     cerr << *it << " = " << a << endl;
     err(++it, args...);
 }
-ll rdn(int y, int m, int d)
-{
+ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
         y--, m += 12;
@@ -84,73 +78,68 @@ ll rdn(int y, int m, int d)
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
-string ss;
-struct node
-{
-    node *next[11];
-    bool mark;
-    node()
-    {
-        for(int i = 0; i < 10; i++) next[i] = NULL;
-        mark = false;
+const int N=89;
+string t,p;
+int n;
+int dp[N][N];
+int b[N];
+void kmpPreprocess() {
+    int m=p.size();
+    int i=0,j=-1;
+    b[0]=-1;
+    while(i<m) {
+        while(j>-1 && p[i]!=p[j])
+            j=b[j];
+        i++;
+        j++;
+        b[i]=j;
     }
-};
-node *root;
-void delete_(node *now)
-{
-    for (int i = 0; i < 10; i++)
-    {
-        if (now->next[i] != NULL)
-        {
-            delete_(now->next[i]);
-        }
-    }
-    delete (now);
 }
-bool insert(string s)
-{
-    node *now = root;
-    bool f = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        int x = s[i] - '0';
-        if (now->next[x] == NULL)
-        {
-            now->next[x] = new node();
-            f = 0;
+void kmpSearch() {
+    int i=0,j=0;
+    int m=p.size();
+    int n=t.size();
+    while(i<n) {
+        while(j>-1 && t[i]!=p[j])
+            j=b[j];
+        i++;
+        j++;
+        if(j==m) {
+            printf("P is found at index %d in T\n",i,-j);
+            j=b[j];
         }
-        now = now->next[x];
     }
-    now->mark = true;
-    return f;
 }
-string ara[10009];
-int main()
-{
-    QUERY
-    {
-        root=new node();
-        int n;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> ara[i];
-        }
-        sort(ara, ara + n);
-        bool f = 0;
-        printf("Case %d: ", _T);
-        for (int i = n - 1; i >= 0; i--)
-        {
-            if (insert(ara[i]))
-            {
-                f = 1;
-                break;
-            }
-        }
-        if (f)
-            puts("NO");
-        else
-            puts("YES");
-        delete_(root);
+void subString(int l,int r){
+    p="";
+    for(int i=l;i<=r;i++)p+=t[i];
+}
+int recur(int l,int r){
+    if(l>r)return 0;
+    if(l==r)return dp[l][r]=1;
+    int &ans=dp[l][r];
+    if(ans!=-1)return ans;
+    ans=inf;
+    for(int i=l;i<r;i++){
+        ans=min(ans,recur(l,i)+recur(i+1,r));
+    }
+    subString(l,r);
+    kmpPreprocess();
+    int len=r-l+1;
+    int x=len-b[len];
+    if(x<len && len%x==0){
+        ans=min(ans,recur(l,l+x-1));
+    }
+    return ans;
+}
+int main() {
+    while(true) {
+        cin>>t;
+       // if(tc==19)cerr<<t<<endl;
+        n=t.size();
+       // tc++;
+        if(t[0]=='*')break;
+        memset(dp,-1,sizeof dp);
+        cout<<recur(0,n-1)<<endl;
     }
 }

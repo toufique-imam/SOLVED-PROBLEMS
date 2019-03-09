@@ -35,10 +35,7 @@ typedef unsigned long long ull;
 #define set(N, cur) N = (N | (1 << cur))
 #define reset(N, cur) N = (N & (~(1 << cur)))
 #define check(N, cur) ((N & (1 << cur)) == 0)
-#define QUERY           \
-    int test;           \
-    scanf("%d", &test); \
-    for (int _T = 1; _T <= test; _T++)
+#define QUERY int test;scanf("%d", &test);for (int _T = 1; _T <= test; _T++)
 #define FAST ios_base::sync_with_stdio(0), cin.tie(0)
 #define all(v) v.begin(), v.end()
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
@@ -61,17 +58,14 @@ typedef unsigned long long ull;
         err(_it, args);                          \
     }
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
-void err(istream_iterator<string> it)
-{
+void err(istream_iterator<string> it) {
 }
 template <typename T, typename... Args>
-void err(istream_iterator<string> it, T a, Args... args)
-{
+void err(istream_iterator<string> it, T a, Args... args) {
     cerr << *it << " = " << a << endl;
     err(++it, args...);
 }
-ll rdn(int y, int m, int d)
-{
+ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
         y--, m += 12;
@@ -79,78 +73,46 @@ ll rdn(int y, int m, int d)
 }
 /* Direction arrays */
 /* int dx[] = {1,-1,0,0}, dy[] = {0,0,1,-1}; */                        // 4 Direction
-/*int dx[] = {1,-1,0,0,1,1,-1,-1}, dy[] = {0,0,1,-1,1,-1,1,-1};     */ // 8 Direction
+/* int dx[] = {1,-1,0,0,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1,1,-1}; */   // 8 Direction
 /* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1}; */ // Knight Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
-string ss;
-struct node
-{
-    node *next[11];
-    bool mark;
-    node()
-    {
-        for(int i = 0; i < 10; i++) next[i] = NULL;
-        mark = false;
-    }
-};
-node *root;
-void delete_(node *now)
-{
-    for (int i = 0; i < 10; i++)
-    {
-        if (now->next[i] != NULL)
-        {
-            delete_(now->next[i]);
+string s;
+int palin[1009][1009];
+int cost[1009];
+int main() {
+    QUERY{
+        memset(palin,0,sizeof palin);
+        cin>>s;
+        int n=s.size();
+        for(int i=0; i<n; i++)
+            palin[i][i]=1;
+        for(int i=0; i<n-1; i++) {
+            if(s[i]==s[i+1])
+                palin[i][i+1]=1;
         }
-    }
-    delete (now);
-}
-bool insert(string s)
-{
-    node *now = root;
-    bool f = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        int x = s[i] - '0';
-        if (now->next[x] == NULL)
-        {
-            now->next[x] = new node();
-            f = 0;
-        }
-        now = now->next[x];
-    }
-    now->mark = true;
-    return f;
-}
-string ara[10009];
-int main()
-{
-    QUERY
-    {
-        root=new node();
-        int n;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> ara[i];
-        }
-        sort(ara, ara + n);
-        bool f = 0;
-        printf("Case %d: ", _T);
-        for (int i = n - 1; i >= 0; i--)
-        {
-            if (insert(ara[i]))
-            {
-                f = 1;
-                break;
+        for(int len=3; len<=n; len++) {
+            for(int i=0; i<n; i++) {
+                int j=i+len-1;
+                if(j>=n)
+                    break;
+                if(s[i]==s[j])
+                    palin[i][j]|=palin[i+1][j-1];
             }
         }
-        if (f)
-            puts("NO");
-        else
-            puts("YES");
-        delete_(root);
+        int tmp;
+        memset(cost,inf,sizeof cost);
+        for(int i=0;i<n;i++){
+            if(palin[0][i])cost[i]=0;
+            else{
+                for(int j=0;j<i;j++){
+                    if(palin[j+1][i]){
+                        cost[i]=min(cost[i],cost[j]+1);
+                    }
+                }
+            }
+        }
+        printf("Case %d: %d\n",_T,cost[n-1]+1);
     }
 }

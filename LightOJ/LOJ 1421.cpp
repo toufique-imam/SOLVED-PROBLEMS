@@ -35,10 +35,7 @@ typedef unsigned long long ull;
 #define set(N, cur) N = (N | (1 << cur))
 #define reset(N, cur) N = (N & (~(1 << cur)))
 #define check(N, cur) ((N & (1 << cur)) == 0)
-#define QUERY           \
-    int test;           \
-    scanf("%d", &test); \
-    for (int _T = 1; _T <= test; _T++)
+#define QUERY int test;scanf("%d", &test);for (int _T = 1; _T <= test; _T++)
 #define FAST ios_base::sync_with_stdio(0), cin.tie(0)
 #define all(v) v.begin(), v.end()
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
@@ -61,17 +58,14 @@ typedef unsigned long long ull;
         err(_it, args);                          \
     }
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
-void err(istream_iterator<string> it)
-{
+void err(istream_iterator<string> it) {
 }
 template <typename T, typename... Args>
-void err(istream_iterator<string> it, T a, Args... args)
-{
+void err(istream_iterator<string> it, T a, Args... args) {
     cerr << *it << " = " << a << endl;
     err(++it, args...);
 }
-ll rdn(int y, int m, int d)
-{
+ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
         y--, m += 12;
@@ -79,78 +73,45 @@ ll rdn(int y, int m, int d)
 }
 /* Direction arrays */
 /* int dx[] = {1,-1,0,0}, dy[] = {0,0,1,-1}; */                        // 4 Direction
-/*int dx[] = {1,-1,0,0,1,1,-1,-1}, dy[] = {0,0,1,-1,1,-1,1,-1};     */ // 8 Direction
+/* int dx[] = {1,-1,0,0,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1,1,-1}; */   // 8 Direction
 /* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1}; */ // Knight Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
-string ss;
-struct node
-{
-    node *next[11];
-    bool mark;
-    node()
-    {
-        for(int i = 0; i < 10; i++) next[i] = NULL;
-        mark = false;
-    }
-};
-node *root;
-void delete_(node *now)
-{
-    for (int i = 0; i < 10; i++)
-    {
-        if (now->next[i] != NULL)
-        {
-            delete_(now->next[i]);
-        }
-    }
-    delete (now);
-}
-bool insert(string s)
-{
-    node *now = root;
-    bool f = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        int x = s[i] - '0';
-        if (now->next[x] == NULL)
-        {
-            now->next[x] = new node();
-            f = 0;
-        }
-        now = now->next[x];
-    }
-    now->mark = true;
-    return f;
-}
-string ara[10009];
-int main()
-{
-    QUERY
-    {
-        root=new node();
+const int N=1e5+9;
+int cnt[2][N];
+int ara[N];
+int main() {
+    QUERY{
         int n;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> ara[i];
+        scanf("%d",&n);
+        memset(cnt,0,sizeof cnt);
+        multiset<int>ms;
+        multiset<int>::iterator it;
+        for(int i=0; i<n; i++)
+            scanf("%d",&ara[i]);
+        for(int i=0; i<n; i++) {
+            ms.insert(ara[i]);
+            it=ms.lower_bound(ara[i]);
+            it++;
+            if(it!=ms.end())
+                ms.erase(it);
+            cnt[0][i]=ms.size();
         }
-        sort(ara, ara + n);
-        bool f = 0;
-        printf("Case %d: ", _T);
-        for (int i = n - 1; i >= 0; i--)
-        {
-            if (insert(ara[i]))
-            {
-                f = 1;
-                break;
-            }
+        ms.clear();
+        for(int i=n-1; i>-1; i--) {
+            ms.insert(ara[i]);
+            it=ms.lower_bound(ara[i]);
+            it++;
+            if(it!=ms.end())
+                ms.erase(it);
+            cnt[1][i]=ms.size();
         }
-        if (f)
-            puts("NO");
-        else
-            puts("YES");
-        delete_(root);
+        int maxi=-1;
+        for(int i=0; i<n; i++) {
+            if(cnt[0][i]==cnt[1][i])
+                maxi=max(maxi,cnt[0][i]+cnt[1][i]-1);
+        }
+        printf("Case %d: %d\n",_T,maxi);
     }
 }

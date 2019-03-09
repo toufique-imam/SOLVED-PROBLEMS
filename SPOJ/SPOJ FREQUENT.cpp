@@ -35,10 +35,7 @@ typedef unsigned long long ull;
 #define set(N, cur) N = (N | (1 << cur))
 #define reset(N, cur) N = (N & (~(1 << cur)))
 #define check(N, cur) ((N & (1 << cur)) == 0)
-#define QUERY           \
-    int test;           \
-    scanf("%d", &test); \
-    for (int _T = 1; _T <= test; _T++)
+#define QUERY int test;scanf("%d", &test);for (int _T = 1; _T <= test; _T++)
 #define FAST ios_base::sync_with_stdio(0), cin.tie(0)
 #define all(v) v.begin(), v.end()
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
@@ -61,17 +58,14 @@ typedef unsigned long long ull;
         err(_it, args);                          \
     }
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
-void err(istream_iterator<string> it)
-{
+void err(istream_iterator<string> it) {
 }
 template <typename T, typename... Args>
-void err(istream_iterator<string> it, T a, Args... args)
-{
+void err(istream_iterator<string> it, T a, Args... args) {
     cerr << *it << " = " << a << endl;
     err(++it, args...);
 }
-ll rdn(int y, int m, int d)
-{
+ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
         y--, m += 12;
@@ -84,73 +78,99 @@ ll rdn(int y, int m, int d)
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1}; */            // Hexagonal Direction
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
-string ss;
-struct node
-{
-    node *next[11];
-    bool mark;
-    node()
-    {
-        for(int i = 0; i < 10; i++) next[i] = NULL;
-        mark = false;
+struct node {
+    pii l,r,m;
+    node() {
+        l=r=m= {-1,1};
+    }
+    node(int val) {
+        l.ff=r.ff=m.ff=val;
+        l.ss=r.ss=m.ss=1;
     }
 };
-node *root;
-void delete_(node *now)
-{
-    for (int i = 0; i < 10; i++)
-    {
-        if (now->next[i] != NULL)
-        {
-            delete_(now->next[i]);
+const int N=1e5+9;
+node tree__[4*N];
+int ara[N];
+map<int,int>mp;
+void merge__(node &a,node &b,node &c) {
+    a.l=b.l;
+    a.r=c.r;
+    if(b.l.ff==b.m.ff)
+        a.l=b.m;
+    if(c.r.ff==c.m.ff)
+        a.r=c.m;
+    a.m.ss=0;
+    if(b.m.ff==c.m.ff)
+        a.m= {b.m.ff,b.m.ss+c.m.ss};
+    if(b.m.ff==c.l.ff) {
+        if(b.m.ss+c.l.ss>a.m.ss) {
+            a.m= {b.m.ff,b.m.ss+c.l.ss};
         }
     }
-    delete (now);
-}
-bool insert(string s)
-{
-    node *now = root;
-    bool f = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        int x = s[i] - '0';
-        if (now->next[x] == NULL)
-        {
-            now->next[x] = new node();
-            f = 0;
+    if(b.r.ff==c.m.ff) {
+        if(b.r.ss+c.m.ss>a.m.ss) {
+            a.m= {b.r.ff,b.r.ss+c.m.ss};
         }
-        now = now->next[x];
     }
-    now->mark = true;
-    return f;
-}
-string ara[10009];
-int main()
-{
-    QUERY
-    {
-        root=new node();
-        int n;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> ara[i];
+    if(b.r.ff==c.l.ff) {
+        if(b.r.ss+c.l.ss>a.m.ss) {
+            a.m= {b.r.ff,b.r.ss+c.l.ss};
         }
-        sort(ara, ara + n);
-        bool f = 0;
-        printf("Case %d: ", _T);
-        for (int i = n - 1; i >= 0; i--)
+    }
+    if(b.m.ss>=c.m.ss && b.m.ss>a.m.ss)
+        a.m=b.m;
+    if(b.m.ss<c.m.ss && c.m.ss>a.m.ss)
+        a.m=c.m;
+}
+void build__(int idx,int st,int en) {
+    if(st==en) {
+        tree__[idx]=node(ara[en]);
+        return;
+    }
+    int mid=(st+en)/2;
+    int lt=idx*2;
+    int rg=idx*2+1;
+    build__(lt,st,mid);
+    build__(rg,mid+1,en);
+    merge__(tree__[idx],tree__[lt],tree__[rg]);
+}
+int maxi;
+void query__(int idx,int st,int en,int l,int r) {
+    if(st>=l && en<=r)
         {
-            if (insert(ara[i]))
-            {
-                f = 1;
-                break;
+            mp[tree__[idx].m.ff]+=tree__[idx].m.ss;
+            if(tree__[idx].m.ff!=tree__[idx].l.ff){
+                mp[tree__[idx].l.ff]+=tree__[idx].l.ss;
             }
+            if(tree__[idx].m.ff!=tree__[idx].r.ff){
+                mp[tree__[idx].r.ff]+=tree__[idx].r.ss;
+            }
+            maxi=max4(maxi,mp[tree__[idx].l.ff],mp[tree__[idx].r.ff],mp[tree__[idx].m.ff]);
+            return;
         }
-        if (f)
-            puts("NO");
-        else
-            puts("YES");
-        delete_(root);
+    if(r< st || l>en)
+        return;
+    int mid=(st+en)/2;
+    int lt=idx*2;
+    int rg=idx*2+1;
+    query__(lt,st,mid,l,r);
+    query__(rg,mid+1,en,l,r);
+    return;
+}
+int main() {
+    int n,q;
+    while(scanf("%d",&n)==1 && n){
+        scanf("%d",&q);
+        for(int i=1;i<=n;i++)scanf("%d",&ara[i]);
+        build__(1,1,n);
+        int a,b;
+        while(q--){
+
+            mp.clear();
+            scanf("%d%d",&a,&b);
+            maxi=-1e9;
+            query__(1,1,n,a,b);
+            printf("%d\n",maxi);
+        }
     }
 }
