@@ -55,66 +55,27 @@ typedef long long ll;
 #define MERGE(v1, v2, v) merge(all(v1), all(v2), back_inserter(v))
 #define pll pair<ll, ll>
 
-string p;
-struct node
-{
-    node *next[27];
-    int cnt;
-    node()
-    {
-        for (int i = 0; i < 26; i++)
-            next[i] = NULL;
-        cnt = 0;
-    }
-};
-node *root;
-void insert_()
-{
-    node *now = root;
-    int len = p.size();
-    for (int i = 0; i < len; i++)
-    {
-        int id = p[i] - 'a';
-        if (now->next[id] == NULL)
-        {
-            now->next[id] = new node();
-        }
-        now = now->next[id];
-        now->cnt++;
-    }
-}
-int query()
-{
-    node *now = root;
-    int len = p.size();
-    for (int i = 0; i < len; i++)
-    {
-        int id = p[i] - 'a';
-        now = now->next[id];
-        if (now->cnt == 1)
-            return i + 1;
-    }
-    return len;
-}
-string ara[1009];
 int main()
 {
-    root = new node();
-    int i = 0;
-    while (cin >> p)
+    string t, p;
+    while (cin >> p >> t)
     {
-        insert_();
-        ara[i++] = p;
-    }
-    for (int j = 0; j < i; j++)
-    {
-        p = ara[j];
-        int x = query();
-        printf("%s ", p.c_str());
-        for (int k = 0; k < x; k++)
+        int i = 0, j = 0;
+        for (i = 0; i < p.size() && j < t.size();)
         {
-            printf("%c", p[k]);
+            if (p[i] == t[j])
+            {
+                i++;
+                j++;
+            }
+            else
+            {
+                j++;
+            }
         }
-        printf("\n");
+        if (i == p.size())
+            puts("Yes");
+        else
+            puts("No");
     }
 }

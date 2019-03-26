@@ -55,66 +55,66 @@ typedef long long ll;
 #define MERGE(v1, v2, v) merge(all(v1), all(v2), back_inserter(v))
 #define pll pair<ll, ll>
 
-string p;
-struct node
+/*-----------Hash-------------*/
+string s;
+#define Base1 10000019
+#define Base2 10000079
+#define MOD1 1000000007
+#define MOD2 1000000009
+pll calc_hash()
 {
-    node *next[27];
-    int cnt;
-    node()
-    {
-        for (int i = 0; i < 26; i++)
-            next[i] = NULL;
-        cnt = 0;
-    }
-};
-node *root;
-void insert_()
-{
-    node *now = root;
-    int len = p.size();
+    int len = s.size();
+    ll ans1 = 0;
+    ll ans2 = 0;
     for (int i = 0; i < len; i++)
     {
-        int id = p[i] - 'a';
-        if (now->next[id] == NULL)
-        {
-            now->next[id] = new node();
-        }
-        now = now->next[id];
-        now->cnt++;
+        ll x = s[i] - 'a' + 1;
+        ans1 = ((ans1 * Base1) % MOD1 + x) % MOD1;
+        ans2 = ((ans2 * Base2) % MOD2 + x) % MOD2;
     }
+    return MP(ans1, ans2);
 }
-int query()
+/*---------------------------*/
+
+vector<string> v;
+bool comp(const vector<int> &v1, const vector<int> &v2)
 {
-    node *now = root;
-    int len = p.size();
-    for (int i = 0; i < len; i++)
+    if (v1.size() != v2.size())
+        return v1.size() > v2.size();
+    else if (!v1.empty())
     {
-        int id = p[i] - 'a';
-        now = now->next[id];
-        if (now->cnt == 1)
-            return i + 1;
+        return v[v1[0]] < v[v2[0]];
     }
-    return len;
 }
-string ara[1009];
 int main()
 {
-    root = new node();
-    int i = 0;
-    while (cin >> p)
+    map<pll, vector<int>> mp;
+    while (cin >> s)
+        v.push_back(s);
+    sort(all(v));
+    for (int i = 0; i < v.size(); i++)
     {
-        insert_();
-        ara[i++] = p;
+        s = v[i];
+        sort(all(s));
+        pll x = calc_hash();
+        mp[x].push_back(i);
     }
-    for (int j = 0; j < i; j++)
+    vector<vector<int>> ans;
+    for (map<pll, vector<int>>::iterator itr = mp.begin(); itr != mp.end(); itr++)
     {
-        p = ara[j];
-        int x = query();
-        printf("%s ", p.c_str());
-        for (int k = 0; k < x; k++)
+        ans.push_back(itr->ss);
+    }
+    sort(all(ans), comp);
+    for (int i = 0; i < 5; i++)
+    {
+        if (ans[i].empty())
+            break;
+        printf("Group of size %d: ", (int)ans[i].size());
+        for (int j = 0; j < (int)ans[i].size(); j++)
         {
-            printf("%c", p[k]);
+            if (j == 0 || v[ans[i][j]] != v[ans[i][j - 1]])
+                cout << v[ans[i][j]] << " ";
         }
-        printf("\n");
+        printf(".\n");
     }
 }

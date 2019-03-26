@@ -54,66 +54,68 @@ typedef long long ll;
 #define segtree int mid = (st + en) / 2, lt = node * 2, rg = node * 2 + 1
 #define MERGE(v1, v2, v) merge(all(v1), all(v2), back_inserter(v))
 #define pll pair<ll, ll>
-
-string p;
-struct node
+const int N = 1000009;
+const int N1 = 1;
+char t[N1], p[N];
+int b[N];
+void kmpPreprocess()
 {
-    node *next[27];
-    int cnt;
-    node()
+    int m = strlen(p);
+    int i = 0, j = -1;
+    b[0] = -1;
+    while (i < m)
     {
-        for (int i = 0; i < 26; i++)
-            next[i] = NULL;
-        cnt = 0;
+        while (j > -1 && p[i] != p[j])
+            j = b[j];
+        i++;
+        j++;
+        b[i] = j;
     }
-};
-node *root;
-void insert_()
+}
+void printFailure()
 {
-    node *now = root;
-    int len = p.size();
-    for (int i = 0; i < len; i++)
+    int len = strlen(p);
+    for (int i = 0; i <= len; i++)
+        printf("%d ", b[i]);
+    printf("\n");
+}
+int kmpSearch()
+{
+    int i = 0, j = 0;
+    int cnt = 0;
+    int m = strlen(p);
+    int n = strlen(t);
+    while (i < n)
     {
-        int id = p[i] - 'a';
-        if (now->next[id] == NULL)
+        while (j > -1 && t[i] != p[j])
+            j = b[j];
+        i++;
+        j++;
+        if (j == m)
         {
-            now->next[id] = new node();
+            cnt++;
+            //printf("P is found at index %d in T\n",i-j);
+            j = b[j];
         }
-        now = now->next[id];
-        now->cnt++;
     }
+    return cnt;
 }
-int query()
-{
-    node *now = root;
-    int len = p.size();
-    for (int i = 0; i < len; i++)
-    {
-        int id = p[i] - 'a';
-        now = now->next[id];
-        if (now->cnt == 1)
-            return i + 1;
-    }
-    return len;
-}
-string ara[1009];
+
 int main()
 {
-    root = new node();
-    int i = 0;
-    while (cin >> p)
+    int T = 0;
+    int n;
+    while (scanf("%d", &n) == 1 && n)
     {
-        insert_();
-        ara[i++] = p;
-    }
-    for (int j = 0; j < i; j++)
-    {
-        p = ara[j];
-        int x = query();
-        printf("%s ", p.c_str());
-        for (int k = 0; k < x; k++)
+        T++;
+        scanf("%s", p);
+        kmpPreprocess();
+        printf("Test case #%d\n", T);
+        for (int i = 2; i <= n; i++)
         {
-            printf("%c", p[k]);
+            int x = i - b[i];
+            if (x < i && i % x == 0)
+                printf("%d %d\n", i, i / x);
         }
         printf("\n");
     }
