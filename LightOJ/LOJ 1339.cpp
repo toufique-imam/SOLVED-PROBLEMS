@@ -122,7 +122,6 @@ ND query(int node,int st,int en,int l,int r) {
         ND res2=query(rg,mid+1,en,mid+1,r);
         merge_(res,res1,res2);
         return res;
-
     }
 }
 int main() {
