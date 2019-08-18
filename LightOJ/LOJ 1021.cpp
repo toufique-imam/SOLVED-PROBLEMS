@@ -80,8 +80,6 @@ ll recur(int mask,int so_far)
 }
 int main()
 {
-    read;
-    write;
     fast;
     int test;
     cin>>test;
@@ -89,7 +87,6 @@ int main()
     {
         cin>>base>>k>>s;
         memset(dp,0,sizeof dp);
-        //memset(dp,-1,sizeof dp);
         sz=s.size();
         limit=(1<<sz);
         dp[0][0]=1;
