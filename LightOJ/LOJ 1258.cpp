@@ -90,6 +90,12 @@ void kmpPreprocess() {
         else j=b[j];
     }
 }
+void debugkmp(){
+    for(int i=0;i<p.size();i++){
+        cerr<<b[i]<<" ";
+    }
+    cerr<<endl;
+}
 int kmpSearch() {
     int i=0,j=0;
     int m=p.size();
@@ -108,7 +114,9 @@ int main() {
         t=p;
         reverse(all(t));
         swap(t,p);
+        cerr<<t<<endl;
         kmpPreprocess();
+        debugkmp();
         int len=p.size();
         int x=kmpSearch();
         //cerr<<x<<endl;
