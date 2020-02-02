@@ -7,26 +7,17 @@ using namespace std;
 template <typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template <typename T>
-using ordered_set_rev = tree<T, null_type, greater<T>, rb_tree_tag,
-      tree_order_statistics_node_update>;
-template <typename T>
 using dijkstra = priority_queue<T, vector<T>, greater<T>>;
 
 using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
-#define fbo find_by_order // k th index
-#define ook order_of_key // strictly smaller than k
+#define fbo find_by_order  // k th index
+#define ook order_of_key   // strictly smaller than k
 #define PI acos(-1.0)
 #define inf 0x3f3f3f3f
 #define max_ull 18446744073709551615
 #define max_ll 9223372036854775807
-#define min3(a, b, c) min(a, min(b, c))
-#define max3(a, b, c) max(a, max(b, c))
-#define min4(a, b, c, d) min(min(a, b), min(c, d))
-#define max4(a, b, c, d) max(max(a, b), max(c, d))
-#define max5(a, b, c, d, e) max(max3(a, b, c), max(d, e))
-#define min5(a, b, c, d, e) min(min3(a, b, c), min(d, e))
 #define lead_zero(x) __builtin_clzll(x)
 #define trail_zero(x) __builtin_ctzll(x)
 #define total_1s(x) __builtin_popcountll(x)
@@ -42,7 +33,7 @@ typedef unsigned long long ull;
 #define reunique(v) v.resize(std::unique(all(v)) - v.begin())
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define pul pair<ull,ull>
+#define pul pair<ull, ull>
 #define ff first
 #define ss second
 #define MERGE(v1, v2, v) merge(all(v1), all(v2), back_inserter(v))
@@ -52,36 +43,7 @@ typedef unsigned long long ull;
 #define write freopen("output.txt", "w", stdout)
 #define in_range(v, r, l) upper_bound(all(v), r) - lower_bound(all(v), l)
 #define LCM(a, b) (a / __gcd(a, b)) * b;
-#define SEGMENT_TREE int mid=(st+en)/2,lt=node*2,rg=lt+1
-template <typename T1, typename T2>
-ostream& operator<<(ostream& fout, const pair<T1, T2>& ps) {
-    fout << ps.ff << " " << ps.ss;
-    return fout;
-}
-template <typename T1, typename T2>
-ostream& operator<<(ostream& fout, const map<T1, T2>& mp) {
-    for (pair<T1, T2> i : mp)
-        fout << i.first << " : " << i.second << "\n";
-    return fout;
-}
-template <typename T>
-ostream& operator<<(ostream& fout, const vector<T>& v) {
-    for (T i : v)
-        fout << i << "\n";
-    return fout;
-}
-template <typename T>
-ostream& operator<<(ostream& fout, const set<T>& v) {
-    for (T i : v)
-        fout << i << " ";
-    return fout;
-}
-template <typename T>
-ostream& operator<<(ostream& fout, const ordered_set<T>& v) {
-    for (T i : v)
-        fout << i << " ";
-    return fout;
-}
+
 ll rdn(int y, int m, int d) {
     /* Rata Die day one is 0001-01-01 */
     if (m < 3)
@@ -89,175 +51,165 @@ ll rdn(int y, int m, int d) {
     return 365 * y + y / 4 - y / 100 + y / 400 + (153 * m - 457) / 5 + d - 306;
 }
 /* Direction arrays */
-/*int dx[] = {1,-1,0,0}, dy[] = {0,0,1,-1};                             */ // 4Direction
-/*int dx[] = {1,-1,0,0,1,1,-1,-1}, dy[] = {0,0,1,-1,1,-1,1,-1};         */ // 8Direction
-/* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1};     */ // KnightDirection
-/* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1};                */ // HexagonalDirection
+/*int dx[] = {1,-1,0,0}, dy[] = {0,0,1,-1};                             */  // 4Direction
+/*int dx[] = {1,-1,0,0,1,1,-1,-1}, dy[] = {0,0,1,-1,1,-1,1,-1};         */  // 8Direction
+/* int dx[] = {1,-1,1,-1,2,2,-2,-2} , dy[] = {2,2,-2,-2,1,-1,1,-1};     */  // KnightDirection
+/* int dx[] = {2,-2,1,1,-1,-1} , dy[] = {0,0,1,-1,1,-1};                */  // HexagonalDirection
 /* int day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; */
-const int N1 = 50309;
-const int N = 509;
-int par[N], mini[N];
-int node_[N1], idx[N1], tracker[N1];
-vector<int>edge[N];
-int grid[N][N];
-int supersource = 0, supersink = 1;
-vector< pair<pii, pii> >vv;
-vector<pii>print[N];
-int bfs() {
+const int N1 = 50009, N2 = 1009;
+int n, m;
+vector<pair<int, pii>> vp;
+int supersource = 0, supersink = 1001;
+ll grid[N2][N2];
+vector<int> edge[N2];
+int valsofar[N2];
+int cnt;
+void addedge(int from, int to, ll value) {
+    if (grid[from][to] == 0) {
+        edge[from].EB(to);
+        if (grid[to][from] == 0)
+            edge[to].EB(from);
+    }
+    grid[from][to] += value;
+}
+void clear() {
+    vp.clear();
+    memset(valsofar, 0, sizeof valsofar);
+    memset(grid, 0, sizeof grid);
+    for (int i = 0; i < N2; i++) {
+        edge[i].clear();
+    }
+}
+void debug(int N = N2) {
+    for (int i = 0; i < N; i++) {
+        if (edge[i].empty()) continue;
+        cerr << i << " : ";
+        for (int j : edge[i]) {
+            cerr << "(" << j << "," << grid[i][j] << ")";
+        }
+        cerr << ";\n";
+    }
+}
+int par[N2];
+ll mini[N2];
+ll bfs() {
+    queue<int> q;
+    q.push(supersource);
     memset(par, -1, sizeof par);
     memset(mini, inf, sizeof mini);
-    queue<int>q;
-    int p;
-    q.push(supersource);
     par[supersource] = supersource;
-    while(!q.empty()) {
+    int p;
+    while (!q.empty()) {
         int t = q.front();
         q.pop();
-        if(t == supersink)
-            return mini[t];
-        for(int i = 0; i < edge[t].size(); i++) {
+        if (t == supersink) break;
+        for (int i = 0; i < (int)edge[t].size(); i++) {
             p = edge[t][i];
-            if(par[p] == -1 && grid[t][p] > 0) {
-                par[p] = t;
-                mini[p] = min(mini[t], grid[t][p]);
+            if (grid[t][p] > 0 && par[p] == -1) {
                 q.push(p);
+                mini[p] = min(grid[t][p], mini[t]);
+                par[p] = t;
             }
         }
     }
-    return 0;
+    if (par[supersink] == -1) return 0;
+    return mini[supersink];
 }
-void update_path(int now, int cc) {
-    if(now == -1 || par[now] == now)
-        return;
-    grid[par[now]][now] -= cc;
-    grid[now][par[now]] += cc;
-    update_path(par[now], cc);
+void update_path(int now, ll val) {
+    if (par[now] == -1 || par[now] == now) return;
+    grid[par[now]][now] -= val;
+    grid[now][par[now]] += val;
+    update_path(par[now], val);
 }
-int maxflow() {
-    int ans = 0;
-    int mf = bfs();
-    while(mf > 0) {
-        update_path(supersink, mf);
+ll maxflow() {
+    ll ans = 0;
+    ll mf = bfs();
+    while (mf > 0) {
         ans += mf;
+        update_path(supersink, mf);
         mf = bfs();
     }
     return ans;
 }
-
-inline void add_edge(int from, int to, int w) {
-    edge[from].EB(to);
-    edge[to].EB(from);
-    grid[from][to] = w;
-}
-void clear() {
-    vv.clear();
-    memset(tracker, 0, sizeof tracker);
-    memset(node_, 0, sizeof node_);
-    memset(idx, 0, sizeof idx);
-    for(int i = 0; i < N; i++) {
-        edge[i].clear();
-        print[i].clear();
-    }
-    memset(grid, 0, sizeof grid);
-}
 int main() {
-    read;
-    write;
-    int n, m, cas = 0;
-    while(scanf("%d", &n) == 1 && n) {
-        clear();
+    int cas = 1;
+    while (scanf("%d", &n) == 1) {
+        if (n == 0) break;
         scanf("%d", &m);
-        cas++;
-        int v, a, b, lo = 1e9, hi = 0;
-        for(int i = 0; i < n; i++) {
-            scanf("%d %d %d", &v, &a, &b);
-            lo = min(lo, a);
-            hi = max(hi, b);
-            node_[a] = 1;
-            node_[b] = 1;
-            vv.EB(MP(MP(a, b), MP(v, i + 2)));
+        clear();
+        vector<int> segments;
+        int vx, a, b;
+        cnt = n + 1;
+        ll sum = 0;
+        segments.EB(-1);
+        for (int i = 1; i <= n; i++) {
+            scanf("%d %d %d", &vx, &a, &b);
+            sum += vx;
+            segments.EB(a);
+            segments.EB(b);
+            vp.EB(MP(vx, MP(a, b)));
         }
-        sort(all(vv));
-        int minix, cnt = n + 2;
-        int taken = 0, prev = -1;
-        bool f = 0;
-
-        for(int i = lo; i <= hi; i++) {
-            if(node_[i] == 1) {
-                if(prev == -1)
-                    prev = i;
-                else {
-                    vv.EB(MP(prev, i), MP(0, cnt));
-                    idx[prev] = vv.size() - 1;
-                    assert(cnt < N);
-                    add_edge(cnt, supersink, (i - prev)*m);
-                    prev = i;
-                    cnt++;
-                }
+        //supersource -> monkey with need(v) ->edges(m) -> supersink
+        sort(all(segments));
+        reunique(segments);
+        int len = segments.size();
+        for (int i = 1; i <= n; i++) {
+            addedge(supersource, len + i, vp[i - 1].first);
+            int lx = lower_bound(all(segments), vp[i - 1].second.first) - segments.begin();
+            int rx = lower_bound(all(segments), vp[i - 1].second.second) - segments.begin();
+            for (int j = lx; j < rx; j++) {
+                addedge(len + i, j, segments[j + 1] - segments[j]);
             }
         }
-        //cerr<<vv<<endl;
-        pair<pii, pii>tt;
-        int sum = 0;
-        for(int i = 0; i < n; i++) {
-            add_edge(supersource, vv[i].ss.ss, vv[i].ss.ff);
-            sum += vv[i].ss.ff;
-            for(int j = vv[i].ff.ff; j <= vv[i].ff.ss; j++) {
-                if(node_[j] == 1) {
-                    tt = vv[idx[j]];
-                    add_edge(vv[i].ss.ss, tt.ss.ss, tt.ff.ss - tt.ff.ff);
-                }
-            }
+        for (int i = 1; i + 1 < len; i++) {
+            addedge(i, supersink, (segments[i + 1] - segments[i]) * m);
         }
-        int ans = maxflow();
-        //cerr << ans << " " << sum << endl;
-        //cerr << (ans == sum ? "YES" : "NO") << endl;
-        printf("%s\n", ans == sum ? "YES" : "NO");
-        if(ans == sum) {
-            sort(vv.begin(), vv.begin() + n, [](pair<pii, pii>a, pair<pii, pii>b) {
-                if(a.ff.ss != b.ff.ss)
-                    return a.ff.ss<b.ff.ss;
-                return a.ff.ff < b.ff.ff;
-            });
-            for(int i = 0; i < n; i++) {
-                int need = vv[i].ss.ff;
-                cerr<<vv[i]<<endl;
-                for(int j = vv[i].ff.ff; j <= vv[i].ff.ss && need > 0; j++) {
-                    if(node_[j] == 1) {
-                        tt = vv[idx[j]];
-                        int last = -1;
-                        for(int k = tt.ff.ff; k <= tt.ff.ss ; k++) {
-                            if(need==0){
-                                print[vv[i].ss.ss].EB(MP(last, k));
-                                last=-1;
-                                break;
-                            }
-                            if(tracker[k] == 0) {
-                                if(last == -1)
-                                    last = k;
-                                need--;
-                                tracker[k] = 1;
+        for (int i = 0; i < len; i++) {
+            valsofar[i] = segments[i];
+        }
+        //  debug();
+        ll ans = maxflow();
+        printf("Case %d: ", cas++);
+        if (ans == sum) {
+            printf("Yes\n");
+            ll tmp = 0;
+            for (int i = len + 1; i <= len + n; i++) {
+                vector<pii> sv;
+                for (int j : edge[i]) {
+                    if (grid[j][i] > 0) {
+                        if (segments[j] + grid[j][i] < segments[j + 1]) {
+                            if (grid[j][i] + valsofar[j] <= segments[j + 1]) {
+                                sv.EB(MP(valsofar[j], valsofar[j] + grid[j][i]));
+                                valsofar[j] += grid[j][i];
+                                if (valsofar[j] == segments[j + 1]) valsofar[j] = segments[j];
                             } else {
-                                if(last != -1) {
-                                    print[vv[i].ss.ss].EB(MP(last, k));
-                                }
-                                last = -1;
+                                int x = grid[j][i] - (segments[j + 1] - valsofar[j]);
+                                sv.EB(MP(valsofar[j], segments[j + 1]));
+                                valsofar[j] = segments[j] + x;
+                                sv.EB(MP(segments[j], valsofar[j]));
                             }
-                        }
-                        if(last!=-1){
-                            print[vv[i].ss.ss].EB(MP(last,tt.ff.ss+1));
+                        } else {
+                            sv.EB(MP(segments[j], segments[j + 1]));
                         }
                     }
                 }
+                sort(all(sv));
+                for (int j = 0; j + 1 < sv.size();) {
+                    if (sv[j].second == sv[j + 1].first) {
+                        sv[j].second = sv[j + 1].second;
+                        sv.erase(sv.begin() + j + 1);
+                    } else
+                        ++j;
+                }
+                assert(!sv.empty());
+                printf("%d", (int)sv.size());
+                for (vector<pii>::iterator itr = sv.begin(); itr != sv.end(); itr++) {
+                    printf(" (%d,%d)", itr->first, itr->second);
+                }
+                printf("\n");
             }
-            for(int i = 0; i < N; i++) {
-                if(print[i].empty())
-                    continue;
-                cerr << i << " :: ";
-                cerr << print[i] << endl;
-            }
+        } else {
+            printf("No\n");
         }
-
     }
-
 }
