@@ -57,7 +57,7 @@ public:
     }
 } tree[4*N];
 ll ara[N];
-inline void merge_(data &node,data <,data &rg)
+inline void merge_(data &node,data &lt,data &rg)
 {
     node.sum=lt.sum+rg.sum;
     node.prefix=max(lt.sum+rg.prefix,lt.prefix);
