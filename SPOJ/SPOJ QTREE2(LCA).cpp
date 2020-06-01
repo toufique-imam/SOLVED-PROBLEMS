@@ -127,7 +127,8 @@ int bin_sch(int key)
     while(hi>=lo)
     {
         mid=(hi+lo)/2;
-        if(power[mid]<=key)
+        ll tmp = (1<<mid);
+        if(tmp<=key)
         {
             ans=mid,lo=mid+1;
         }
@@ -142,7 +143,7 @@ int find_k(int v1,int k)
     while(k>0)
     {
         j=bin_sch(k);
-        k-=power[j];
+        k-=(1<<j);
         ans=sparse_table[ans][j];
     }
     return ans;
